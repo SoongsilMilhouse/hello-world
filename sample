@@ -1,0 +1,71 @@
+#include<string.h>
+#include<stdio.h>
+typedef struct super{
+        char inode[512];
+        char data[1024];
+}super;                                         //super block
+typedef struct inode{
+        char _d;
+        char time[20];
+        int size;
+        int direct;
+        int single;
+        int _double;
+}inode;                                         //inode list
+
+typedef struct data{
+        char dd[128];
+}data;
+//data block
+typedef struct filesys{
+        char boot[2];
+        super sb;
+        inode in[512];
+        data db[1024];
+}filesys;
+
+
+int main()
+{
+        FILE *fp;
+        char path[20]="/ ",command[20];
+        int i;
+
+        if((fp=fopen("myfs","r"))==NULL){
+                printf("error : no myfs");
+                return 0;
+        }
+        while(1){
+                printf("[%s]$ ",path);
+                scanf("%s",command);
+                if(strcmp(command,"byebye")==0)
+                        break;
+                else{
+                        for(i=0;i<20;++i)
+                                command[i]='\0';
+                }
+        }
+        return 0;
+}
+void mymkdir (FILE *fp)
+{
+        int i,count=0;
+        char num;
+        fclose(fp);
+        fp=fopen("myfs","wb+");
+        fseek(fp,4,SEEK_SET);
+        while(1){
+
+                fscanf(fp,"%c",&num);
+                if(num=='0'){
+                        fseek(fp,-1,SEEK_CUR);
+                        fprintf(fp,"1");
+                        break;
+                }
+                count++;
+
+        }
+        fseek(fp,224,SEEK_SET);
+        while(1){
+                fscanf(fp,"%c",&num);
+
